@@ -38,7 +38,7 @@ module.exports.bootstrap = function (done) {
   CronService.addCron('getLastTorrents', '00 00 * * * *', function () {
     //CronService.addCron('getLastTorrents', '00 * * * * *', function () { // Test
     var date = new Date();
-    var timestamp = Math.floor((date.getTime() / 1000) - (60 * 60));
+    var timestamp = Math.floor((date.getTime() / 1000) - (60 * 60)); // MODIFY HERE IF CHANGE CRON PARAM
     sails.log.verbose('Start CRON', 'getLastTorrents', timestamp);
     TorrentService.addTorrentModel(timestamp);
   });
@@ -46,7 +46,12 @@ module.exports.bootstrap = function (done) {
   // CRON: downloadTorrents
   CronService.addCron('downloadTorrents', '00 00 11 * * 1-5', function () {
     sails.log.verbose('Start CRON', 'downloadTorrents');
-    TorrentService.downloadTorrents();
+    var date = new Date();
+    var startCron = date.getTime();
+    sails.log.verbose('Start CRON', startCron);
+    var stopCron = Math.floor(startCron + (6 * 60 * 60 * 1000)); // MODIFY HERE IF CHANGE CRON PARAM
+    sails.log.verbose('Stop CRON', stopCron);
+    TorrentService.downloadTorrents(startCron, stopCron);
   });
 
   done();

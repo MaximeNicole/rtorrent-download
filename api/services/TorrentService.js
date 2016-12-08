@@ -54,12 +54,7 @@ var TorrentService = {
     });
   },
 
-  downloadTorrents: function () {
-    var date = new Date();
-    var startCron = date.getTime();
-    sails.log.verbose('Start CRON', startCron);
-    var stopCron = Math.floor(startCron + (6 * 60 * 60 * 1000));
-    sails.log.verbose('Stop CRON', stopCron);
+  downloadTorrents: function (startCron, stopCron) {
     // On regarde en base de données s'il y a des torrents non verrouillé et non téléchargé.
     Torrent.find({downloaded: false, locked: false}).exec(function (err, records) {
       if (err) {
