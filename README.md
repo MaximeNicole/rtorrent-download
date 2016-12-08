@@ -6,7 +6,7 @@
 
 ## Installation
 - npm install
-- Copy the file in node_modules_change/node-rtorrent to node_module/node-rtorrent
+- Copy the file in node_modules_change/node-rtorrent to node_modules/node-rtorrent
 
 ## Configuration
 - set the config file torrent in config/torrent.js
