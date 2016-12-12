@@ -60,6 +60,7 @@ module.exports.bootstrap = function (done) {
       if(isMounted && !lock) {
         sails.log.silly(sails.config.torrent.disk.driveName, 'is mounted.', 'Launching operation!');
         lock = true;
+        DiskService.process();
       } else {
         if(isMounted && lock) {
           sails.log.silly(sails.config.torrent.disk.driveName, 'is mounted.', 'Operation in progress!');
