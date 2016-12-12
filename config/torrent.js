@@ -11,5 +11,11 @@ module.exports.torrent = {
   port: 443,
   path: '/rutorrent/plugins/data/action.php',
   authorization: 'user:password',
-  destination: '/home/user/Movies'
+  destination: '/home/user/Movies/',
+  disk: {
+    driveName: 'Name',
+    folderDelete: '/Movies_to_delete',
+    folderRubbish: '/Movies_rubbish',
+    folderCopy: '/New_movies'
+  }
 };
