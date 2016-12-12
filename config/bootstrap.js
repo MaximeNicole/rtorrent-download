@@ -36,7 +36,6 @@ module.exports.bootstrap = function (done) {
 
   // CRON: getLastTorrents
   CronService.addCron('getLastTorrents', '00 00 * * * *', function () {
-    //CronService.addCron('getLastTorrents', '00 * * * * *', function () { // Test
     var date = new Date();
     var timestamp = Math.floor((date.getTime() / 1000) - (60 * 60)); // MODIFY HERE IF CHANGE CRON PARAM
     sails.log.verbose('Start CRON', 'getLastTorrents', timestamp);
@@ -51,7 +50,26 @@ module.exports.bootstrap = function (done) {
     sails.log.verbose('Start CRON', startCron);
     var stopCron = Math.floor(startCron + (6 * 60 * 60 * 1000)); // MODIFY HERE IF CHANGE CRON PARAM
     sails.log.verbose('Stop CRON', stopCron);
-    TorrentService.downloadTorrents(startCron, stopCron);
+    TorrentService.downloadTorrents(stopCron);
+  });
+
+  var lock = false;
+  CronService.addCron('copyTorrents', '00,15,30,45 * * * * *', function () {
+    sails.log.verbose('Start CRON', 'copyTorrents');
+    DiskService.isMounted(function (isMounted) {
+      if(isMounted && !lock) {
+        sails.log.silly(sails.config.torrent.disk.driveName, 'is mounted.', 'Launching operation!');
+        lock = true;
+        DiskService.process();
+      } else {
+        if(isMounted && lock) {
+          sails.log.silly(sails.config.torrent.disk.driveName, 'is mounted.', 'Operation in progress!');
+        } else {
+          sails.log.silly(sails.config.torrent.disk.driveName, 'is not mounted.');
+          lock = false;
+        }
+      }
+    });
   });
 
   done();

@@ -24,10 +24,6 @@ module.exports = {
       type: 'integer'
     },
 
-    files: {
-      type: 'array'
-    },
-
     details: {
       type: 'json'
     },
@@ -44,6 +40,20 @@ module.exports = {
     locked: {
       type: 'boolean',
       defaultsTo: false
+    },
+
+    copied: {
+      type: 'boolean',
+      defaultsTo: false
+    },
+
+    copiedDate: {
+      type: 'datetime'
+    },
+
+    files: {
+      collection: 'file',
+      via: 'torrent'
     }
   }
 };
