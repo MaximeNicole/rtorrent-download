@@ -36,7 +36,7 @@ var TorrentService = {
     sails.log.debug('addTorrentModel');
     this.get(timestamp, function (data) {
 
-      if(data.count == 0) {
+      if(data.count !== 0) {
 
         var countTorrent = data.count;
         var iterTorrent = 0;
@@ -134,18 +134,22 @@ var TorrentService = {
   },
 
   downloadTorrents: function (stopCron) {
+    sails.log.debug('downloadTorrents');
     // On regarde en base de données s'il y a des torrents non verrouillé et non téléchargé.
     Torrent.find({downloaded: false, locked: false}).populate('files').exec(function (err, records) {
       if (err) {
         sails.log.error('downloadTorrents', err);
       } else {
+        sails.log.debug(records.length);
         if (records.length > 0) {
           iterT = 0;
           function iterTorrent() {
+            sails.log.debug('iterTorrent');
             var date = new Date();
             var now = date.getTime();
             sails.log.verbose('Now', now);
             if (typeof(records[iterT]) !== 'undefined' && now < stopCron) {
+              sails.log.debug('iterTorrent record', records[iterT]);
               downloadTorrent(records[iterT], function () {
                 iterT++;
                 iterTorrent();
@@ -156,6 +160,7 @@ var TorrentService = {
           iterTorrent();
 
           function downloadTorrent(torrent, cbT) {
+            sails.log.debug('downloadTorrent');
             // On vérouille le torrent pour ne pas que le script repasse dessus.
             Torrent.update({id: torrent.id}, {locked: true}).exec(function (err) {
               if (err) {
