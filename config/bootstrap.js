@@ -43,7 +43,7 @@ module.exports.bootstrap = function (done) {
   });
 
   // CRON: downloadTorrents
-  CronService.addCron('downloadTorrents', '00 00 11 * * 1-5', function () {
+  CronService.addCron('downloadTorrents', '00 10 11 * * 1-5', function () {
     sails.log.verbose('Start CRON', 'downloadTorrents');
     var date = new Date();
     var startCron = date.getTime();
