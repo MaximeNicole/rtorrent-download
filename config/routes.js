@@ -34,7 +34,7 @@ module.exports.routes = {
 
   '/': {
     view: 'homepage'
-  }
+  },
 
   /***************************************************************************
   *                                                                          *
@@ -45,5 +45,17 @@ module.exports.routes = {
   * for configuration options and examples.                                  *
   *                                                                          *
   ***************************************************************************/
+
+  '/streaming': {
+    controller: 'TorrentController',
+    action: 'streamingListFile',
+    layout: 'torrent/layout'
+  },
+  '/streaming/:fileID':  {
+    controller: 'TorrentController',
+    action: 'streamingWatch',
+    layout: 'torrent/layout'
+  },
+  '/streaming/flux/:fileID': 'TorrentController.streamingWatchFlux'
 
 };

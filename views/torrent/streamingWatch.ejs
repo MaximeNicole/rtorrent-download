@@ -1,0 +1,110 @@
+<div class="streaming-watch">
+  <div class="row">
+
+    <div class="col-lg-9 player">
+
+      <div class="row">
+
+        <div class="col-xs-12">
+          <a
+            href="/streaming/flux/<%= fileID %>"
+            style="display:block;width:100%;height:457px"
+            class="flowplayer"
+            id="player">
+          </a>
+
+          <!-- this will install flowplayer inside previous A- tag. -->
+          <script>
+            flowplayer("player", "/flowplayer/flowplayer.swf");
+            (function ($) {
+              var $flowplayer = $('.flowplayer');
+              var $width = $($flowplayer).width();
+              $($flowplayer).css('height', Math.floor($width * 330 / 520));
+            })(jQuery);
+          </script>
+          <!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
+        </div>
+      </div>
+
+      <div class="row informations">
+
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-lg-12">
+              <% if (typeof details.title !== 'undefined') { %>
+              <h3><%= details.title %></h3>
+              <% } else { %>
+              <h3><%= name %></h3>
+              <% } %>
+            </div>
+
+            <% if (typeof details.season !== 'undefined') { %>
+            <div class="col-lg-2">
+              <p>Season: <%= details.season %></p>
+            </div>
+            <% } %>
+
+            <% if (typeof details.episode !== 'undefined') { %>
+            <div class="col-lg-2">
+              <p>Episode: <%= details.episode %></p>
+            </div>
+            <% } %>
+
+            <% if (typeof details.year !== 'undefined') { %>
+            <div class="col-lg-2">
+              <p>Year: <%= details.year %></p>
+            </div>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="col-lg-3 others-similar-videos">
+
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">Card title</h4>
+          <p class="card-text">Some quick example text to build on the card title and.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">Card title</h4>
+          <p class="card-text">Some quick example text to build on the card title and.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">Card title</h4>
+          <p class="card-text">Some quick example text to build on the card title and.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">Card title</h4>
+          <p class="card-text">Some quick example text to build on the card title and.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">Card title</h4>
+          <p class="card-text">Some quick example text to build on the card title and.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

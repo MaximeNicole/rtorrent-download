@@ -14,23 +14,24 @@ module.exports.bootstrap = function (done) {
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
 
-  // Dévérouille tous les torrents
-  Torrent.find({locked: true}).exec(function (err, records) {
-    if (err) {
-      sails.log.error(err);
-    } else {
-      records.forEach(function (record) {
-        Torrent.update({id: record.id}, {locked: false}).exec(function (err, updated) {
-          if (err) {
-            sails.log.error(err);
-          } else {
-            sails.log.verbose('Unlock torrent', updated.hash);
-          }
+  if(process.env.NODE_ENV !== 'production') {
+    // Dévérouille tous les torrents
+    Torrent.find({locked: true}).exec(function (err, records) {
+      if (err) {
+        sails.log.error(err);
+      } else {
+        records.forEach(function (record) {
+          Torrent.update({id: record.id}, {locked: false}).exec(function (err, updated) {
+            if (err) {
+              sails.log.error(err);
+            } else {
+              sails.log.verbose('Unlock torrent', updated.hash);
+            }
+          });
         });
-      });
-    }
-  });
-
+      }
+    });
+  }
 
   // Todo: Mettre en place les CRON d'initialisation
 
@@ -43,7 +44,8 @@ module.exports.bootstrap = function (done) {
   });
 
   // CRON: downloadTorrents
-  CronService.addCron('downloadTorrents', '00 00 11 * * 1-5', function () {
+  if(sails.config.torrent.downloadOrStreaming === 'download') {
+  CronService.addCron('downloadTorrents', '00 10 11 * * 1-5', function () {
     sails.log.verbose('Start CRON', 'downloadTorrents');
     var date = new Date();
     var startCron = date.getTime();
@@ -53,24 +55,29 @@ module.exports.bootstrap = function (done) {
     TorrentService.downloadTorrents(stopCron);
   });
 
-  var lock = false;
-  CronService.addCron('copyTorrents', '00,15,30,45 * * * * *', function () {
-    sails.log.verbose('Start CRON', 'copyTorrents');
-    DiskService.isMounted(function (isMounted) {
-      if(isMounted && !lock) {
-        sails.log.silly(sails.config.torrent.disk.driveName, 'is mounted.', 'Launching operation!');
-        lock = true;
-        DiskService.process();
-      } else {
-        if(isMounted && lock) {
-          sails.log.silly(sails.config.torrent.disk.driveName, 'is mounted.', 'Operation in progress!');
+    var lock = false;
+    CronService.addCron('copyTorrents', '00,15,30,45 * * * * *', function () {
+      sails.log.verbose('Start CRON', 'copyTorrents');
+      DiskService.isMounted(function (isMounted) {
+        if (isMounted && !lock) {
+          sails.log.silly(sails.config.torrent.disk.driveName, 'is mounted.', 'Launching operation!');
+          lock = true;
+          DiskService.process();
         } else {
-          sails.log.silly(sails.config.torrent.disk.driveName, 'is not mounted.');
-          lock = false;
+          if (isMounted && lock) {
+            sails.log.silly(sails.config.torrent.disk.driveName, 'is mounted.', 'Operation in progress!');
+          } else {
+            sails.log.silly(sails.config.torrent.disk.driveName, 'is not mounted.');
+            lock = false;
+          }
         }
-      }
+      });
     });
-  });
+  }
+
+  if(sails.config.torrent.downloadOrStreaming === 'streaming') {
+
+  }
 
   done();
 };
